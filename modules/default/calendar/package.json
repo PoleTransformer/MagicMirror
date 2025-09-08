@@ -1,0 +1,14 @@
+{
+  "name": "calendar",
+  "version": "1.0.0",
+  "description": "Fetch calendar using Microsoft Graph API",
+  "main": "calender.js",
+  "author": "Wayne Zeng",
+  "license": "MIT",
+  "dependencies": {
+    "@azure/msal-node": "^2.7.0",
+    "axios": "^1.6.8",
+    "dotenv": "^16.4.5",
+    "yargs": "^17.7.2"
+  }
+}
