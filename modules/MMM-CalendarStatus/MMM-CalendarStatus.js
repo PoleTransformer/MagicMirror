@@ -26,10 +26,10 @@ Module.register("MMM-CalendarStatus", {
       if (notification === 'CALENDAR_EVENTS') {
         const currentDate = new Date().getTime();
         payload.every(event => {
-          this.content = "THIS ROOM IS AVAILABLE"
+          this.content = "ROOM IS NOT BOOKED"
           this.className = 'g'
           if(currentDate >= event.startDate && currentDate <= event.endDate) {
-            this.content = "THIS ROOM IS OCCUPIED"
+            this.content = "ROOM IS BOOKED"
             this.className = 'r'
             return false;
           }
