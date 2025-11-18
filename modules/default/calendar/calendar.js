@@ -1,5 +1,5 @@
 /* global CalendarUtils */
-
+//Client
 Module.register("calendar", {
 	// Define module defaults
 	defaults: {
@@ -38,6 +38,7 @@ Module.register("calendar", {
 		showTimeToday: false,
 		colored: false,
 		forceUseCurrentTime: false,
+		pathname: "",
 		tableClass: "small",
 		calendars: [
 			{
@@ -128,7 +129,8 @@ Module.register("calendar", {
 				broadcastPastEvents: calendar.broadcastPastEvents,
 				selfSignedCert: calendar.selfSignedCert,
 				excludedEvents: calendar.excludedEvents,
-				fetchInterval: calendar.fetchInterval
+				fetchInterval: calendar.fetchInterval,
+				pathname: window.location.search
 			};
 
 			if (typeof calendar.symbolClass === "undefined" || calendar.symbolClass === null) {
@@ -156,6 +158,7 @@ Module.register("calendar", {
 			 * fetcher till cycle
 			 */
 			this.addCalendar(calendar.url, calendar.auth, calendarConfig);
+			//Log.debug(window.location.pathname)
 		});
 
 		// for backward compatibility titleReplace
@@ -185,7 +188,7 @@ Module.register("calendar", {
 		}
 
 		if (notification === "CALENDAR_EVENTS") {
-			if (this.hasCalendarURL(payload.url)) {
+			if (payload.pathname==window.location.search&&this.hasCalendarURL(payload.url)) {
 				this.calendarData[payload.url] = payload.events;
 				this.error = null;
 				this.loaded = true;
@@ -752,6 +755,7 @@ Module.register("calendar", {
 	 * @param {object} calendarConfig The config of the specific calendar
 	 */
 	addCalendar (url, auth, calendarConfig) {
+		Log.debug(calendarConfig.location)
 		this.sendSocketNotification("ADD_CALENDAR", {
 			id: this.identifier,
 			url: url,
@@ -765,7 +769,8 @@ Module.register("calendar", {
 			timeClass: calendarConfig.timeClass,
 			auth: auth,
 			broadcastPastEvents: calendarConfig.broadcastPastEvents || this.config.broadcastPastEvents,
-			selfSignedCert: calendarConfig.selfSignedCert || this.config.selfSignedCert
+			selfSignedCert: calendarConfig.selfSignedCert || this.config.selfSignedCert,
+			pathname: calendarConfig.pathname
 		});
 	},
 
@@ -931,7 +936,7 @@ Module.register("calendar", {
 			delete event.url;
 		}
 
-		this.sendNotification("CALENDAR_EVENTS", eventList);
+		this.sendNotification("CALENDAR_EVENTS", {eventList: eventList, pathname: window.location.search});
 	},
 
 	/**

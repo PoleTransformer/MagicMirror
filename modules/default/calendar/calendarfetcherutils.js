@@ -138,8 +138,10 @@ const CalendarFetcherUtils = {
 	filterEvents (data, config) {
 		const newEvents = [];
 
-		const dbg = JSON.parse(data).value;
-		//Log.debug(dbg);
+		const dbg = JSON.parse(data).value
+
+		//Log.debug(dbg[0].organizer.emailAddress.name)
+
 		dbg.forEach(event => {
 			// Log.debug(event.subject)
 			// Log.debug(event.start.dateTime);
@@ -155,7 +157,7 @@ const CalendarFetcherUtils = {
 				recurringEvent: false,
 				class: 'PUBLIC',
 				firstYear: year,
-				location: '',
+				location: dbg[0].organizer.emailAddress.name,
 				geo: false,
 				description: false
 			});
