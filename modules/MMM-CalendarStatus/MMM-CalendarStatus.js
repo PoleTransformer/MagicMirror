@@ -24,16 +24,21 @@ Module.register("MMM-CalendarStatus", {
 
     notificationReceived: function(notification, payload, sender) {
       if (notification === 'CALENDAR_EVENTS') {
+        console.debug(payload)
         const currentDate = new Date().getTime();
-        payload.every(event => {
-          this.content = "ROOM IS NOT BOOKED"
-          this.className = 'g'
-          if(currentDate >= event.startDate && currentDate <= event.endDate) {
-            this.content = "ROOM IS BOOKED"
-            this.className = 'r'
-            return false;
+        payload.eventList.every(event => {
+          // console.info("Calendar location:"+event.location)
+          // console.info("Window location:"+window.location.search)
+          if(window.location.search===payload.pathname) {
+            this.content = event.location+" IS NOT BOOKED"
+            this.className = 'g'
+            if(currentDate >= event.startDate && currentDate <= event.endDate) {
+              this.content = event.location+" IS BOOKED"
+              this.className = 'r'
+              return false;
+            }
+            return true;
           }
-          return true;
         })
         this.updateDom()
       }
