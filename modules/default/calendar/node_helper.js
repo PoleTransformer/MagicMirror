@@ -46,7 +46,7 @@ module.exports = NodeHelper.create({
 			return;
 		}
 
-		Log.debug(pathname);
+		//Log.debug(pathname);
 
 		let fetcher;
 		let fetchIntervalCorrected;
