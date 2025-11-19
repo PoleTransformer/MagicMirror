@@ -755,7 +755,7 @@ Module.register("calendar", {
 	 * @param {object} calendarConfig The config of the specific calendar
 	 */
 	addCalendar (url, auth, calendarConfig) {
-		Log.debug(calendarConfig.location)
+		//Log.debug(calendarConfig.location)
 		this.sendSocketNotification("ADD_CALENDAR", {
 			id: this.identifier,
 			url: url,
