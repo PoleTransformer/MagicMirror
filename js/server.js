@@ -1,6 +1,7 @@
 const fs = require("node:fs");
 const http = require("node:http");
 const https = require("node:https");
+const http2 = require("node:http2");
 const path = require("node:path");
 const express = require("express");
 const ipfilter = require("express-ipfilter").IpFilter;
@@ -30,10 +31,13 @@ function Server (config) {
 		return new Promise((resolve) => {
 			if (config.useHttps) {
 				const options = {
-					key: fs.readFileSync(config.httpsPrivateKey),
-					cert: fs.readFileSync(config.httpsCertificate)
+					allowHTTP1: true,
+					key: fs.readFileSync(process.env.httpsPrivateKey),
+					cert: fs.readFileSync(process.env.httpsCertificate)
 				};
 				server = https.Server(options, app);
+				//server = http2.createSecureServer(options, app); // Express doesn't support HTTP/2 as of 2025/11/26
+				
 			} else {
 				server = http.Server(app);
 			}
@@ -46,6 +50,7 @@ function Server (config) {
 			});
 
 			server.on("connection", (socket) => {
+				Log.info(`New connection from ${socket.remoteAddress}`);
 				serverSockets.add(socket);
 				socket.on("close", () => {
 					serverSockets.delete(socket);
