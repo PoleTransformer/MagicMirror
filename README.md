@@ -23,6 +23,18 @@ httpsCertificate="path to cert on server"
 timezone="Pacific Standard Time"
 ```
 
+For production, build a container using the included Dockerfile: 
+
+`docker/podman build -f Dockerfile . -t <tagname>`
+
+Pass the configuration file and env file using container volumes: 
+
+`docker/podman run --rm -v /path/to/config.js:/app/config/config.js -v /path/to/.env:/app/.env -p 8080:8080 <tagname>`
+
+For TLS, enable option in config, configure the  `httpsPrivateKey` and `httpsCertificate` path in .env, pass the certs using volumes: 
+
+`docker/podman run --rm -v /path/to/config.js:/app/config/config.js -v /path/to/.env:/app/.env -v /path/to/cert:/app/.env/path -v /path/to/private/key:/app/.env/path -p 8080:8080 <tagname>`
+
 **MagicMirror²** is an open source modular smart mirror platform. With a growing list of installable modules, the **MagicMirror²** allows you to convert your hallway or bathroom mirror into your personal assistant. **MagicMirror²** is built by the creator of [the original MagicMirror](https://michaelteeuw.nl/tagged/magicmirror) with the incredible help of a [growing community of contributors](https://github.com/MagicMirrorOrg/MagicMirror/graphs/contributors).
 
 MagicMirror² focuses on a modular plugin system and uses [Electron](https://www.electronjs.org/) as an application wrapper. So no more web server or browser installs necessary!
