@@ -16,7 +16,7 @@ jobs:
           - os: ubuntu-latest
             platform: linux/amd64
             name: "AMD64"
-            dockerfile: "docker/Dockerfile"
+            dockerfile: "Dockerfile"
             tag_suffix: ""
 
     runs-on: ${{ matrix.os }}
