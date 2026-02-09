@@ -54,7 +54,9 @@ async function makeRequest(requestOptions,clientid,authority,secret) {
 				});
 			})
 			.on('error', async err => {
-				reject(err);
+				Log.error(err)
+				setTimeout(() => attemptRequest(),1000);
+				//reject(err);
 			})
 		}
 		attemptRequest();
@@ -160,7 +162,16 @@ const CalendarFetcher = function (url, reloadInterval, excludedEvents, maximumEn
 		}
 		Log.debug(requestOptions)
 		const data = await makeRequest(requestOptions,process.env.user,process.env.authority,process.env.pass);
+		events = CalendarFetcherUtils.filterEvents(data, {
+			excludedEvents,
+			includePastEvents,
+			maximumEntries,
+			maximumNumberOfDays
+		});
+		this.broadcastEvents();
+		scheduleTimer();
 
+		/*
 		fetch(url, { headers: headers, agent: httpsAgent })
 			//.then(NodeHelper.checkFetchStatus)
 			.then((response) => response.text())
@@ -192,6 +203,7 @@ const CalendarFetcher = function (url, reloadInterval, excludedEvents, maximumEn
 				fetchFailedCallback(this, error);
 				scheduleTimer();
 			});
+		*/
 	};
 
 	/**

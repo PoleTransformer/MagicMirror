@@ -24,7 +24,7 @@ Module.register("MMM-CalendarStatus", {
 
     notificationReceived: function(notification, payload, sender) {
       if (notification === 'CALENDAR_EVENTS') {
-        console.debug(payload)
+        //console.debug(payload)
         const currentDate = new Date().getTime();
         payload.eventList.every(event => {
           // console.info("Calendar location:"+event.location)

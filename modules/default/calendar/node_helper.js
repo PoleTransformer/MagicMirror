@@ -38,6 +38,7 @@ module.exports = NodeHelper.create({
 	 * @param {string} identifier ID of the module
 	 */
 	createFetcher (url, fetchInterval, excludedEvents, maximumEntries, maximumNumberOfDays, auth, broadcastPastEvents, selfSignedCert, identifier, pathname) {
+		/*
 		try {
 			new URL(url);
 		} catch (error) {
@@ -45,8 +46,9 @@ module.exports = NodeHelper.create({
 			this.sendSocketNotification("CALENDAR_ERROR", { error_type: "MODULE_ERROR_MALFORMED_URL" });
 			return;
 		}
+		*/
 
-		//Log.debug(pathname);
+		Log.debug(pathname);
 
 		let fetcher;
 		let fetchIntervalCorrected;
