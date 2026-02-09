@@ -35,6 +35,30 @@ For TLS, enable option in config, configure the  `httpsPrivateKey` and `httpsCer
 
 `docker/podman run --rm -v /path/to/config.js:/app/config/config.js -v /path/to/.env:/app/.env -v /path/to/cert:/app/.env/path -v /path/to/private/key:/app/.env/path -p 8080:8080 <tagname>`
 
+Use Quadlets to integrate with systemd. In `~/.config/containers/systemd/nameofcontainer.container`:
+
+```
+[Unit]
+Description=CHANGEME
+
+[Container]
+ContainerName=name
+Environment="TZ=<Set timezone>"
+Image=quay.io/valerio38293/magicmirror:master
+Network=host
+Volume=/path/to/config.js:/app/config/config.js
+Volume=/path/to/.env:/app/.env
+Volume=/path/to/cert:/app/.env/path
+Volume=/path/to/private/key:/app/.env/path
+AutoUpdate=registry
+
+[Service]
+Restart=no
+
+[Install]
+WantedBy=multi-user.target
+```
+
 **MagicMirror²** is an open source modular smart mirror platform. With a growing list of installable modules, the **MagicMirror²** allows you to convert your hallway or bathroom mirror into your personal assistant. **MagicMirror²** is built by the creator of [the original MagicMirror](https://michaelteeuw.nl/tagged/magicmirror) with the incredible help of a [growing community of contributors](https://github.com/MagicMirrorOrg/MagicMirror/graphs/contributors).
 
 MagicMirror² focuses on a modular plugin system and uses [Electron](https://www.electronjs.org/) as an application wrapper. So no more web server or browser installs necessary!
