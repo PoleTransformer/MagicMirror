@@ -162,13 +162,20 @@ const CalendarFetcher = function (url, reloadInterval, excludedEvents, maximumEn
 		}
 		Log.debug(requestOptions)
 		const data = await makeRequest(requestOptions,process.env.user,process.env.authority,process.env.pass);
-		events = CalendarFetcherUtils.filterEvents(data, {
-			excludedEvents,
-			includePastEvents,
-			maximumEntries,
-			maximumNumberOfDays
-		});
-		this.broadcastEvents();
+		try {
+			events = CalendarFetcherUtils.filterEvents(data, {
+				excludedEvents,
+				includePastEvents,
+				maximumEntries,
+				maximumNumberOfDays
+			});
+			this.broadcastEvents();
+		}
+		catch(e) {
+			Log.error(e);
+			scheduleTimer(); //if it fails, try again at next schedule time
+		}
+
 		scheduleTimer();
 
 		/*
