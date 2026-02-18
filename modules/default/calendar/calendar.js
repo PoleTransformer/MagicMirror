@@ -928,6 +928,7 @@ Module.register("calendar", {
 	 * The all events available in one array, sorted on startdate.
 	 */
 	broadcastEvents () {
+		Log.debug("Client initiated broadcast events");
 		const eventList = this.createEventList(false);
 		for (const event of eventList) {
 			event.symbol = this.symbolsForEvent(event);
@@ -958,6 +959,7 @@ Module.register("calendar", {
 					} else {
 						this.updateDom(this.config.animationSpeed);
 					}
+					this.broadcastEvents(); //broadcast on dom update to keep modules updated in case of temporary connection loss
 				}, ONE_MINUTE);
 			},
 			ONE_MINUTE - (new Date() % ONE_MINUTE)

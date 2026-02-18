@@ -173,10 +173,9 @@ const CalendarFetcher = function (url, reloadInterval, excludedEvents, maximumEn
 		}
 		catch(e) {
 			Log.error(e);
-			scheduleTimer(); //if it fails, try again at next schedule time
 		}
 
-		scheduleTimer();
+		scheduleTimer(); //if it fails, try again at next schedule time
 
 		/*
 		fetch(url, { headers: headers, agent: httpsAgent })
