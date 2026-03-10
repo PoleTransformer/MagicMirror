@@ -172,10 +172,13 @@ const CalendarFetcher = function (url, reloadInterval, excludedEvents, maximumEn
 			this.broadcastEvents();
 		}
 		catch(e) {
-			Log.error(e);
+			if(e.code == "ECONNRESET")
+				Log.warn("Microsoft Graph API reset the TLS connection. If you see this occasionally in logs, its ok, otherwise investigate.");
+			else
+				Log.error(e);
 		}
 
-		scheduleTimer(); //if it fails, try again at next schedule time
+		scheduleTimer(); //Schedule next fetch
 
 		/*
 		fetch(url, { headers: headers, agent: httpsAgent })
