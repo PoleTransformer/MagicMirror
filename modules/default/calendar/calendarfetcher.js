@@ -54,7 +54,10 @@ async function makeRequest(requestOptions,clientid,authority,secret) {
 				});
 			})
 			.on('error', async err => {
-				Log.error(err)
+				if(e.code === "ECONNRESET")
+					Log.warn("Microsoft Graph API reset the TLS connection. If you see this occasionally in logs, its ok, otherwise investigate.");
+				else
+					Log.error(err)
 				setTimeout(() => attemptRequest(),1000);
 				//reject(err);
 			})
@@ -172,10 +175,7 @@ const CalendarFetcher = function (url, reloadInterval, excludedEvents, maximumEn
 			this.broadcastEvents();
 		}
 		catch(e) {
-			if(e.code === "ECONNRESET")
-				Log.warn("Microsoft Graph API reset the TLS connection. If you see this occasionally in logs, its ok, otherwise investigate.");
-			else
-				Log.error(e);
+			Log.error(e);
 		}
 
 		scheduleTimer(); //Schedule next fetch
