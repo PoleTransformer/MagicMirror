@@ -54,7 +54,7 @@ async function makeRequest(requestOptions,clientid,authority,secret) {
 				});
 			})
 			.on('error', async err => {
-				if(e.code === "ECONNRESET")
+				if(err.code === "ECONNRESET")
 					Log.warn("Microsoft Graph API reset the TLS connection. If you see this occasionally in logs, its ok, otherwise investigate.");
 				else
 					Log.error(err)
