@@ -172,7 +172,7 @@ const CalendarFetcher = function (url, reloadInterval, excludedEvents, maximumEn
 			this.broadcastEvents();
 		}
 		catch(e) {
-			if(e.code == "ECONNRESET" || e.errno == -104)
+			if(e.code === "ECONNRESET")
 				Log.warn("Microsoft Graph API reset the TLS connection. If you see this occasionally in logs, its ok, otherwise investigate.");
 			else
 				Log.error(e);
