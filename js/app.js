@@ -45,7 +45,7 @@ process.on("uncaughtException", function (err) {
 		Log.error("Whoops! There was an uncaught exception...");
 		Log.error(err);
 		Log.error("MagicMirror² will not quit, but it might be a good idea to check why this happened. Maybe no internet connection?");
-		Log.error("If you think this really is an issue, please open an issue on GitHub: https://github.com/MagicMirrorOrg/MagicMirror/issues");
+		Log.error("If you think this really is an issue, please open an issue on GitHub: https://github.com/PoleTransformer/MagicMirror/issues");
 	}
 });
 
