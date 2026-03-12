@@ -3,6 +3,6 @@ const Log = require("logger");
 
 module.exports = NodeHelper.create({
     start: function () {
-        Log.log("STARTING HELPER")
+        Log.log("Starting CalendarStatus Helper")
     },
 });

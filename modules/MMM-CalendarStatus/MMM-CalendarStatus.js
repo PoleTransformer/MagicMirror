@@ -30,10 +30,10 @@ Module.register("MMM-CalendarStatus", {
           // console.info("Calendar location:"+event.location)
           // console.info("Window location:"+window.location.search)
           if(window.location.search===payload.pathname) {
-            this.content = event.location+" IS NOT BOOKED"
+            this.content = event.location+" IS CURRENTLY NOT BOOKED"
             this.className = 'g'
             if(currentDate >= event.startDate && currentDate <= event.endDate) {
-              this.content = event.location+" IS BOOKED"
+              this.content = event.location+" IS CURRENTLY BOOKED"
               this.className = 'r'
               return false;
             }
