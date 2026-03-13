@@ -21,6 +21,12 @@ rooms="comma seperated list of email addresses for the meeting rooms"
 httpsPrivateKey="path to cert private key on server"
 httpsCertificate="path to cert on server"
 timezone="Pacific Standard Time"
+smtpHost="IP or hostname of smtp server"
+smtpServerName="For TLS SNI, replace with smtpHost if unsure"
+smtpPort=25 or 587 or 465
+fromEmail="sender email address"
+toEmail="recipient email address"
+subjectPrefix="What you want the subject to start with"
 ```
 
 For production, build a container using the included Dockerfile: 
