@@ -46,7 +46,7 @@ async function getToken(clientid,authoriti,secret) {
 					from: process.env.fromEmail,
 					to: process.env.toEmail,
 					subject: process.env.subjectPrefix+' MagicMirror Expired Entra Client Secrets',
-					text: 'Please update credentials in the env file and restart the server'
+					text: 'Please update credentials in the env file and restart the server\n\n'+e
 				};
 				if(!alertSent) {
 					transporter.sendMail(mailOptions, function(error, info){
