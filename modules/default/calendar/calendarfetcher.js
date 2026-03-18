@@ -241,7 +241,7 @@ const CalendarFetcher = function (url, reloadInterval, excludedEvents, maximumEn
 	 * Broadcast the existing events.
 	 */
 	this.broadcastEvents = function () {
-		Log.info(`Calendar-Fetcher: Broadcasting ${events.length} events from ${events[0].location}.`);
+		Log.info(`Calendar-Fetcher: Broadcasting ${events.length ?? ''} events from ${events[0]?.location ?? ''}.`);
 		eventsReceivedCallback(this);
 	};
 
