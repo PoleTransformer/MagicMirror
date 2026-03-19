@@ -138,12 +138,15 @@ const CalendarFetcherUtils = {
 	filterEvents (data, config) {
 		const newEvents = [];
 
-		const dbg = JSON.parse(data).value
+		const rawResponse = JSON.parse(data).value
+
+		//filter out tentative events
+		const filtered = rawResponse.filter(event => event.responseStatus.response!=='tentativelyAccepted');
 
 		//Log.debug(dbg[0].organizer.emailAddress.name)
 
-		dbg.forEach(event => {
-			// Log.debug(event.subject)
+		filtered.forEach(event => {
+			// Log.debug(event.responseStatus)
 			// Log.debug(event.start.dateTime);
 			// Log.debug(event.end.dateTime);
 			const unixStart = new Date(event.start.dateTime).getTime();
@@ -158,7 +161,7 @@ const CalendarFetcherUtils = {
 				recurringEvent: false,
 				class: 'PUBLIC',
 				firstYear: year,
-				location: dbg[0].organizer.emailAddress.name,
+				location: filtered[0].organizer.emailAddress.name,
 				geo: false,
 				description: false
 			});
