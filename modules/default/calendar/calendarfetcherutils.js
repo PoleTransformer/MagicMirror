@@ -135,15 +135,16 @@ const CalendarFetcherUtils = {
 	 * @param {object} config The configuration object
 	 * @returns {string[]} the filtered events
 	 */
-	filterEvents (data, config) {
+	filterEvents (data, config, user) {
 		const newEvents = [];
 
+		//Parse events JSON response
 		const rawResponse = JSON.parse(data).value
+		//Get the original owner of calendar
+		const userParsed = JSON.parse(user)
 
 		//filter out tentative events
 		const filtered = rawResponse.filter(event => event.responseStatus.response!=='tentativelyAccepted');
-
-		//Log.debug(dbg[0].organizer.emailAddress.name)
 
 		filtered.forEach(event => {
 			// Log.debug(event.responseStatus)
@@ -161,7 +162,7 @@ const CalendarFetcherUtils = {
 				recurringEvent: false,
 				class: 'PUBLIC',
 				firstYear: year,
-				location: filtered[0].organizer.emailAddress.name,
+				location: userParsed.owner.name,
 				geo: false,
 				description: false
 			});

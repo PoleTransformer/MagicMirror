@@ -118,6 +118,7 @@
 
 #CX3_POPOVER {
   max-width: 75%;
+  max-height: 90%;
   min-width: 50%;
   height: fit-content;
   max-height: calc(max(fit-content, 80%) - 20px);
