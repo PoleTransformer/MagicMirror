@@ -623,6 +623,7 @@ Module.register("MMM-CalendarExt3", {
         let eventsOfWeek = events.filter((ev) => {
           return !(ev.endDate <= sw.getTime() || ev.startDate >= ew.getTime())
         })
+        let dayRowCounter = [0, 0, 0, 0, 0];
         for (let event of eventsOfWeek) {
           if (options.skipPassedEventToday) {
             if (event.today && event.isPassed && !event.isFullday && !event.isMultiday && !event.isCurrent) event.skip = true
@@ -638,6 +639,12 @@ Module.register("MMM-CalendarExt3", {
             })
           } else {
             eDom.classList.add("continueFromPreviousWeek")
+          }
+
+          if(startLine >= 0 && startLine < 5) {
+            dayRowCounter[startLine]++;
+            const rowType = (dayRowCounter[startLine] % 2 === 0 ? "even-row" : "odd-row");
+            eDom.classList.add(rowType);
           }
 
           let endLine = boundary.length - 1
