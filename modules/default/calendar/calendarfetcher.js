@@ -202,13 +202,15 @@ const CalendarFetcher = function (url, reloadInterval, excludedEvents, maximumEn
 		}
 		Log.debug(requestOptions)
 		const data = await makeRequest(requestOptions,process.env.user,process.env.authority,process.env.pass);
+		requestOptions.path='/v1.0/users/'+room+'/calendar';
+		const calendarInfo = await makeRequest(requestOptions,process.env.user,process.env.authority,process.env.pass);
 		try {
 			events = CalendarFetcherUtils.filterEvents(data, {
 				excludedEvents,
 				includePastEvents,
 				maximumEntries,
 				maximumNumberOfDays
-			});
+			}, calendarInfo);
 			this.broadcastEvents();
 		}
 		catch(e) {
