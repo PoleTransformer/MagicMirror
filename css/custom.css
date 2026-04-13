@@ -70,12 +70,20 @@
 
 .CX3 .event.current {
   filter: saturate(2);
-  color: #008B9C;
 }
 
 .CX3 .event {
   margin: 5px 2px;
   line-height: 1;
+}
+
+.CX3 .odd-row {
+  color: #ffff80;
+  filter: brightness(0.8) grayscale(0.5);
+}
+
+.CX3 .even-row {
+  filter: brightness(0.8) grayscale(0.5);
 }
 
 .CX3 .event.singleday .headline:not(.useSymbol)::before,

@@ -143,10 +143,12 @@ const CalendarFetcherUtils = {
 		//Get the original owner of calendar
 		const userParsed = JSON.parse(user)
 
-		//filter out tentative events
-		const filtered = rawResponse.filter(event => event.responseStatus.response!=='tentativelyAccepted');
+		//filter out tentative and cancelled events
+		const intermediate = rawResponse.filter(event => event.isCancelled===false);
+		const filtered = intermediate.filter(event => event.responseStatus.response!=='tentativelyAccepted');
 
 		filtered.forEach(event => {
+			// Log.debug(event.isCancelled)
 			// Log.debug(event.responseStatus)
 			// Log.debug(event.start.dateTime);
 			// Log.debug(event.end.dateTime);

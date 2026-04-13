@@ -8,9 +8,18 @@ const CalendarFetcherUtils = require("./calendarfetcherutils");
 const { log } = require("node:console");
 const { kStringMaxLength } = require("node:buffer");
 const { serialize } = require("node:v8");
+const nodemailer = require('nodemailer');
 require('dotenv').config();
 
-var token = '';
+var token = ''
+var alertSent = 0
+
+let transporter = nodemailer.createTransport({
+    host: process.env.smtpHost,
+    port: process.env.smtpPort,
+    secure: false,
+    servername: process.env.smtpServerName,
+});
 
 async function getToken(clientid,authoriti,secret) {
 	return new Promise(async (resolve,reject) => {
@@ -27,7 +36,34 @@ async function getToken(clientid,authoriti,secret) {
 		};
 		
 		const cca = new msal.ConfidentialClientApplication(msalConfig);
-		const authResponse = await cca.acquireTokenByClientCredential(tokenRequest);
+		var authResponse
+		try {
+			authResponse = await cca.acquireTokenByClientCredential(tokenRequest);
+		}
+		catch(e) {
+			if(e.errorNo===7000222) {
+				let mailOptions = {
+					from: process.env.fromEmail,
+					to: process.env.toEmail,
+					subject: process.env.subjectPrefix+' MagicMirror Expired Entra Client Secrets',
+					text: 'Please update credentials in the env file and restart the server\n\n'+e
+				};
+				if(!alertSent) {
+					transporter.sendMail(mailOptions, function(error, info){
+						if (error) {
+							Log.error(error);
+						} else {
+							Log.info('Email sent: ' + info.response);
+							alertSent=1
+						}
+					});
+				}
+				Log.error("Expired Client Secret")
+			}
+			else
+				Log.error(e)
+			return
+		}
 		Log.debug("Access token: "+authResponse.accessToken);
 		resolve(authResponse.accessToken);
 	});
@@ -50,6 +86,7 @@ async function makeRequest(requestOptions,clientid,authority,secret) {
 					tmp += chunk;
 				});
 				resp.on('end', () => {
+					alertSent=0
 					resolve(tmp);
 				});
 			})
@@ -165,16 +202,13 @@ const CalendarFetcher = function (url, reloadInterval, excludedEvents, maximumEn
 		}
 		Log.debug(requestOptions)
 		const data = await makeRequest(requestOptions,process.env.user,process.env.authority,process.env.pass);
-		requestOptions.path='/v1.0/users/'+room+'/calendar';
-		const calendarInfo = await makeRequest(requestOptions,process.env.user,process.env.authority,process.env.pass);
-
 		try {
 			events = CalendarFetcherUtils.filterEvents(data, {
 				excludedEvents,
 				includePastEvents,
 				maximumEntries,
 				maximumNumberOfDays
-			}, calendarInfo);
+			});
 			this.broadcastEvents();
 		}
 		catch(e) {
