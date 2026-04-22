@@ -443,7 +443,7 @@ Module.register("MMM-CalendarExt3", {
     dom.dataset.mode = options.mode
 
     const makeCellDom = (d, seq) => {
-      let tm = new Date(d.valueOf())
+      let tm = new Date(d.valueOf()-1)
       let cell = document.createElement("div")
       cell.classList.add("cell")
       if (isToday(tm)) cell.classList.add("today")
@@ -500,7 +500,7 @@ Module.register("MMM-CalendarExt3", {
       }, "")
       dateDom.innerHTML = dateHTML
 
-      h.append(dateDom)
+      //h.append(dateDom)
 
       let b = document.createElement("div")
       b.classList.add("cellBody")
@@ -548,6 +548,7 @@ Module.register("MMM-CalendarExt3", {
         let day = (dm.getDay() + 7) % 7
         let dDom = document.createElement("div")
         dDom.classList.add("weekday", `weekday_${day}`)
+        dDom.style.gridColumn = i + 2
         // options.weekends.forEach((w, i) => {
         //   if (day === w) dDom.classList.add("weekend", `weekend_${i + 1}`)
         // })
@@ -592,7 +593,8 @@ Module.register("MMM-CalendarExt3", {
       } while (getWeekNo(w, options) !== eocWeek)
 
       count = (options.mode === "month") ? count : options.weeksInView
-      const maxEventLines = getMaxEventLines(options, count)
+      //const maxEventLines = getMaxEventLines(options, count)
+      const maxEventLines = 26
       dom.style.setProperty("--maxeventlines", maxEventLines)
       dom.dataset.maxEventLines = maxEventLines
       const newOptions = { ...options, maxEventLines }
@@ -608,12 +610,25 @@ Module.register("MMM-CalendarExt3", {
         let ecDom = document.createElement("div")
         ecDom.classList.add("eventContainer", "weekGrid", "weekGridRow")
 
+        //generate timeline
+        for(let hour = 6; hour < 19; hour++) {
+          for(let min = 0; min < 60; min+=30) {
+            let hour12 = hour > 12 ? hour - 12 : hour
+            let timeLabel = document.createElement("div")
+            timeLabel.classList.add("timelineLabel")
+            timeLabel.innerHTML = `${hour12}:${min === 0 ? "00" : "30"}`
+            ecDom.append(timeLabel)
+          }
+        }
+
         let boundary = []
 
         let cm = new Date(wm.valueOf())
-        for (let i = 0; i < 5; i++) {
+        for (let i = 0; i < 6; i++) {
           if (i) cm = new Date(cm.getFullYear(), cm.getMonth(), cm.getDate() + 1)
-          ccDom.append(makeCellDom(cm, i))
+          let cell = makeCellDom(cm, i)
+          cell.style.gridColumn = i + 1
+          ccDom.append(cell)
           boundary.push(cm.getTime())
         }
         boundary.push(cm.setHours(23, 59, 59, 999))
@@ -624,6 +639,7 @@ Module.register("MMM-CalendarExt3", {
           return !(ev.endDate <= sw.getTime() || ev.startDate >= ew.getTime())
         })
         let dayRowCounter = [0, 0, 0, 0, 0];
+        let eventPosition = [new Map(),new Map(),new Map(),new Map(),new Map()];
         for (let event of eventsOfWeek) {
           if (options.skipPassedEventToday) {
             if (event.today && event.isPassed && !event.isFullday && !event.isMultiday && !event.isCurrent) event.skip = true
@@ -631,7 +647,16 @@ Module.register("MMM-CalendarExt3", {
           if (event?.skip) continue
 
           let eDom = renderEventAgenda(event, options, moment)
-
+          let eStart = new Date(event.startDate);
+          let eEnd = new Date(event.endDate);
+          let startHourOffset = eStart.getHours()-6;
+          let startMinOffset = eStart.getMinutes() >= 30 ? 1 : 0;
+          let endHourOffset = eEnd.getHours()-6;
+          let endMinOffset = eEnd.getMinutes() >= 30 ? 1 : 0;
+          let startRow = (startHourOffset*2)+startMinOffset+1
+          let endRow = (endHourOffset*2)+endMinOffset+1
+          eDom.style.gridRowStart = startRow
+          
           let startLine = 0
           if (event.startDate >= boundary.at(0)) {
             startLine = boundary.findIndex((b, idx, bounds) => {
@@ -641,10 +666,28 @@ Module.register("MMM-CalendarExt3", {
             eDom.classList.add("continueFromPreviousWeek")
           }
 
+          if(!eventPosition[startLine].has(startRow)) {
+            eventPosition[startLine].set(startRow,startRow)
+            ecDom.append(eDom)
+          }
+          
+          for (let i = startRow + 1; i < endRow; i++) {
+            let eventContinuation = renderEventAgenda(event, options, moment)
+            const rowType = (i % 2 === 0 ? "even-row" : "odd-row")
+            eventContinuation.classList.add(rowType)
+            eventContinuation.style.gridRowStart = i
+            eventContinuation.style.gridColumnStart = startLine + 2
+
+            if(!eventPosition[startLine].has(i)) {
+              eventPosition[startLine].set(i,i)
+              ecDom.append(eventContinuation)
+            }
+          }
+
           if(startLine >= 0 && startLine < 5) {
-            dayRowCounter[startLine]++;
-            const rowType = (dayRowCounter[startLine] % 2 === 0 ? "even-row" : "odd-row");
-            eDom.classList.add(rowType);
+            dayRowCounter[startLine]++
+            const rowType = (startRow % 2 === 0 ? "even-row" : "odd-row")
+            eDom.classList.add(rowType)
           }
 
           let endLine = boundary.length - 1
@@ -656,8 +699,8 @@ Module.register("MMM-CalendarExt3", {
             eDom.classList.add("continueToNextWeek")
           }
 
-          eDom.style.gridColumnStart = startLine + 1
-          eDom.style.gridColumnEnd = endLine + 1
+          eDom.style.gridColumnStart = startLine + 2
+          eDom.style.gridColumnEnd = endLine + 2
 
           if (event?.noMarquee) {
             eDom.dataset.noMarquee = true
@@ -674,8 +717,6 @@ Module.register("MMM-CalendarExt3", {
               this.eventPopover(eDom, options)
             }
           }
-
-          ecDom.append(eDom)
         }
 
         let dateCells = ccDom.querySelectorAll(".cell")
@@ -700,6 +741,10 @@ Module.register("MMM-CalendarExt3", {
             if (hidden) {
               dateCell.classList.add("hasMore")
               dateCell.style.setProperty("--more", hidden)
+            }
+            if(i>0) {
+              dateCell.classList.add("hasMore")
+              dateCell.style.setProperty("--more", dayRowCounter[i-1])
             }
           }
 

@@ -1,5 +1,5 @@
 {
     "verbose": true,
     "ignore": ["node_modules","js/positions.js"],
-    "ext": "js,json,css,.env"
+    "ext": "js,json,css,.env,mjs"
 }

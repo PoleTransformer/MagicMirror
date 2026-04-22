@@ -281,7 +281,7 @@ const renderEventAgenda = (event, {useSymbol, eventTimeOptions, locale, useIconi
 
   timeBlock.appendChild(startTime)
   timeBlock.appendChild(endTime)
-  headline.appendChild(timeBlock)
+  //headline.appendChild(timeBlock)
 
   let title = document.createElement('div')
   title.classList.add('title')
