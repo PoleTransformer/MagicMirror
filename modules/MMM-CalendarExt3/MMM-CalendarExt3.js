@@ -680,7 +680,13 @@ Module.register("MMM-CalendarExt3", {
 
             if(!eventPosition[startLine].has(i)) {
               eventPosition[startLine].set(i,i)
+              if (!eventContinuation.id) eventContinuation.id = `${eventContinuation.dataset.calendarSeq}_${eventContinuation.dataset.startDate}_${eventContinuation.dataset.endDate}_${new Date(Date.now()).getTime()}`
+              eventContinuation.dataset.popoverble = true
+              eventContinuation.onclick = (ev) => {
+                this.eventPopover(eventContinuation, options)
+              }
               ecDom.append(eventContinuation)
+              
             }
           }
 
